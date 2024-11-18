@@ -1,83 +1,46 @@
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { getProfile, selectUser, logout } from '../redux/reducer/user';
+import { resetState } from '../redux/reducer/cars';
 import Button from '../components/Button';
 
-function ProfileScreen() {
-  const navigation = useNavigation();
 
-  return (
-    <View style={styles.container}>
-      {/* User Avatar */}
-      <View style={styles.avatarContainer}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/100' }} // URL gambar placeholder, bisa diganti dengan gambar profil pengguna
-          style={styles.avatar}
-        />
-      </View>
-      {/* User Information */}
-      <Text style={styles.name}>John Doe</Text>
-      <Text style={styles.email}>johndoe@example.com</Text>
+export default function Profilecreen() {
+    const navigation = useNavigation();
+    const user = useSelector(selectUser);
+    const dispatch = useDispatch();
 
-      {/* Settings Buttons */}
-      <View style={styles.buttonContainer}>
-        <Button
-        onPress={() => navigation.navigate('SignIn')}
-        color="#5CB85F"
-        title="Sign In"
-        style={styles.button}
-        />
-        <Button
-        onPress={() => navigation.navigate('SignUp')}
-        color="#5CB85F"
-        title="Sign Up"
-        style={styles.button}
-        />    
-      </View>
-    </View>
-  );
+    useEffect(() => {
+        if(!user.data && user.token){
+            dispatch(getProfile(user.token));
+        }
+    }, [user]);
+
+    return (
+        <View>
+            {
+                !user.isLogin ?
+                    <View>
+                        <Image source={require('../assets/images/akun_bg.png')} />
+                        <Text>Upss kamu belum memiliki akun. Mulai buat akun agar transaksi di TMMIN Car Rental lebih mudah</Text>
+                        <Button
+                            onPress={() => navigation.navigate('SignUp')}
+                            title={'Register'}
+                            color={'#5CB85F'}
+                        />
+                    </View> :
+                    <View>
+                        <Image height={50} width={50} source={{ uri: user.data?.avatar ? user.data?.avatar : "https://i.pravatar.cc/100" }} />
+                        <Text>Halo, {user.data?.fullname}</Text>
+                        <Button
+                            onPress={() => dispatch(logout(), dispatch(resetState()))}
+                            title={'Logout'}
+                            color={'#A43333'}
+                        />
+                    </View>
+            }
+        </View>
+    )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#F9F9F9',
-  },
-  avatarContainer: {
-    marginTop: 20,
-    marginBottom: 10,
-    borderRadius: 50,
-    overflow: 'hidden',
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-  },
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 10,
-    color: '#333',
-  },
-  email: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    marginTop: 20,
-    width: '100%',
-  },
-  button: {
-    backgroundColor: '#A43333',
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginTop: 10,
-    alignItems: 'center',
-    width: '100%',
-  }
-});
-
-export default ProfileScreen;

@@ -2,7 +2,9 @@ import HomeScreen from './src/screens/Home';
 import CartScreen from './src/screens/Cart';
 import ListScreen from './src/screens/List';
 import Profilecreen from './src/screens/Profile';
-import LoginScreen from './src/screens/SignIn';
+import SignIn from './src/screens/SignIn';
+import SignUp from './src/screens/SignUp';
+import Detail from './src/screens/Detail';
 
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -53,7 +55,13 @@ const App = () => {
         }} name='HomeTabs' component={BottomTabs} />
         <Stack.Screen options={{
           headerShown: false
-        }} name='SignIn' component={LoginScreen} />
+        }} name='SignIn' component={SignIn} />
+        <Stack.Screen options={{
+          headerShown: false
+        }} name='SignUp' component={SignUp} />
+        <Stack.Screen options={{
+          headerShown: false
+        }} name='Detail' component={Detail} />
       </Stack.Navigator>
     </NavigationContainer>
   );
